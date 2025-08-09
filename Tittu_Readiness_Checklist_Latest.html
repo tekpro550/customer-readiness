@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tittu Customer Readiness Checklist</title>
+<style>
+  :root {
+    --brand: #2b73ff;
+    --ink: #111111;
+    --bg: #f6f7fb;
+    --card: #ffffff;
+    --card-b: #e6e9f4;
+    --soft: #fafbff;
+    --ok-bg: #ecfff0;
+    --ok-b: #bfe7c7;
+    --ok-ink: #126f2d;
+    --warn-bg: #fff3ef;
+    --warn-b: #ffd1c6;
+    --warn-ink: #8a1800;
+    --info-bg: #eef5ff;
+    --info-b: #cfe0ff;
+    --info-ink: #114a9e;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif; margin: 0; color: var(--ink); background: var(--bg); line-height: 1.55; }
+  header { background: var(--brand); color: #fff; padding: 22px 20px; }
+  .wrap { max-width: 1024px; margin: 0 auto; }
+  h1 { margin: 0 0 4px; font-size: 28px; }
+  p { margin: 0; }
+  main { padding: 24px 20px 48px; }
+  .row { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .card { background: var(--card); border: 1px solid var(--card-b); border-radius: 12px; padding: 18px; }
+  .card h2 { margin: 0 0 12px; font-size: 20px; }
+  .items { margin-top: 8px; display: grid; gap: 12px; }
+  .item { display: grid; gap: 10px; padding: 12px; border: 1px solid #eef0f6; border-radius: 10px; background: var(--soft); }
+  .inline { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; }
+  label { font-weight: 600; }
+  select, input[type="text"], input[type="email"], input[type="url"], input[type="tel"] { width: 100%; padding: 10px 12px; border: 1px solid #dfe3ef; border-radius: 10px; }
+  .hint { font-size: 12px; color: #555; }
+  .progress { height: 10px; background: #e9ecf7; border-radius: 999px; overflow: hidden; }
+  .bar { height: 100%; width: 0%; background: var(--brand); transition: width .25s ease; }
+  .stat { display: flex; justify-content: space-between; font-size: 14px; margin: 6px 0 0; color: #333; }
+  .btns { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+  .btn { display: inline-block; padding: 10px 14px; border-radius: 10px; text-decoration: none; border: 1px solid #d0d4e4; background: #fff; color: #111; cursor: pointer; }
+  .btn.primary { background: var(--brand); color: #fff; border-color: var(--brand); }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .pill { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 12px; border: 1px solid #e0e4f0; background: #fff; margin-left: 8px; }
+  .ok { color: var(--ok-ink); border-color: var(--ok-b); background: var(--ok-bg); }
+  .warn { color: var(--warn-ink); border-color: var(--warn-b); background: var(--warn-bg); }
+  .info { color: var(--info-ink); border-color: var(--info-b); background: var(--info-bg); }
+  details summary { cursor: pointer; }
+  .missing { margin: 8px 0 0; padding: 10px 12px; border: 1px dashed var(--warn-b); background: var(--warn-bg); border-radius: 10px; }
+  .statusBox { margin-top: 16px; padding: 12px; border-radius: 10px; border: 1px solid; }
+  @media print { .btns { display: none; } header { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Tittu Customer Readiness Checklist</h1>
+    <p>Select the exact options so we can give a clear onboarding decision</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="card">
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div class="stat"><span id="count">0 of 12 available</span><span id="pct">0%</span></div>
+    <div class="btns">
+      <button class="btn" id="save">Save progress</button>
+      <button class="btn" id="reset">Reset</button>
+      <button class="btn" id="print">Print</button>
+      <button class="btn primary" id="export" disabled>Export readiness report</button>
+    </div>
+  </div>
+
+  <div class="row">
+    <section class="card">
+      <h2>Business identity</h2>
+      <div class="items">
+        <div class="item">
+          <div class="inline">
+            <div>
+              <label for="docType">Registration document</label>
+              <select id="docType">
+                <option value="">Select a document</option>
+                <option>GST certificate</option>
+                <option>UDYAM MSME registration</option>
+                <option>Certificate of incorporation</option>
+                <option>Bank statement</option>
+                <option>Tax document</option>
+                <option>Other</option>
+                <option>Not available</option>
+              </select>
+            </div>
+            <div>
+              <label for="docOther">If Other, specify</label>
+              <input id="docOther" type="text" placeholder="Type document name" />
+            </div>
+          </div>
+          <div class="hint">Choose Other only if your document is not listed. Not available will block onboarding</div>
+        </div>
+
+        <div class="item">
+          <div class="inline">
+            <div>
+              <label for="addrType">Proof of address document</label>
+              <select id="addrType">
+                <option value="">Select a document</option>
+                <option>Electricity bill</option>
+                <option>Water bill</option>
+                <option>Property tax receipt</option>
+                <option>Bank statement with address</option>
+                <option>Lease agreement</option>
+                <option>Other</option>
+                <option>Not available</option>
+              </select>
+            </div>
+            <div>
+              <label for="addrOther">If Other, specify</label>
+              <input id="addrOther" type="text" placeholder="Type document name" />
+            </div>
+          </div>
+          <div class="hint">Must be recent and show business name and address</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Meta account and Facebook access</h2>
+      <div class="items">
+        <div class="item"><label>Access to Meta Business Account admin page
+          <select id="mbm_admin">
+            <option value="">Select</option>
+            <option value="admin">I have admin access</option>
+            <option value="employee">I have employee access only</option>
+            <option value="none">No access</option>
+          </select></label>
+          <div class="hint">Admin access is required for setup</div>
+        </div>
+        <div class="item"><label>Multi factor authentication on Meta admin
+          <select id="mbm_mfa">
+            <option value="">Select</option>
+            <option value="all_admins">Enabled for all admins</option>
+            <option value="some_admins">Enabled for some admins</option>
+            <option value="none">Not enabled</option>
+          </select></label>
+          <div class="hint">Recommended to enable for all admins</div>
+        </div>
+        <div class="item"><label>Personal Facebook account available for initial access
+          <select id="fb_personal">
+            <option value="">Select</option>
+            <option value="available">Available</option>
+            <option value="not">Not available</option>
+          </select></label></div>
+        <div class="item">
+          <label>Business Facebook Page created
+            <select id="fb_page_created">
+              <option value="">Select</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+              <option value="not_sure">Not sure</option>
+            </select>
+          </label>
+          <div class="inline" id="fb_page_name_row" style="display:none">
+            <div>
+              <label for="fb_page_name">Business Facebook Page name</label>
+              <input id="fb_page_name" type="text" placeholder="Type page name" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Phone number plan</h2>
+      <div class="items">
+        <div class="item"><label>Number plan
+          <select id="num_plan">
+            <option value="">Select</option>
+            <option value="new_unused">New number never used on WhatsApp</option>
+            <option value="migrate_to_api">Existing WhatsApp number will be migrated to API</option>
+            <option value="existing_cannot_use">Existing number used on WhatsApp app cannot be used</option>
+            <option value="not_decided">Not decided yet</option>
+          </select></label>
+          <div class="hint">New or migration are acceptable options</div>
+        </div>
+        <div class="item"><label>OTP reachability
+          <select id="num_otp">
+            <option value="">Select</option>
+            <option value="can_receive">Can receive SMS or voice OTP</option>
+            <option value="cannot_receive">Cannot receive OTP</option>
+          </select></label></div>
+        <div class="item"><label>Number type
+          <select id="num_type">
+            <option value="">Select</option>
+            <option value="physical">Physical SIM mobile or landline (not virtual)</option>
+            <option value="virtual">Virtual or VoIP (not allowed)</option>
+          </select></label></div>
+        <div class="inline">
+          <div>
+            <label for="number">Planned WhatsApp number</label>
+            <input id="number" type="tel" placeholder="+91 xxxxx xxxxx" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Digital presence</h2>
+      <div class="items">
+        <div class="item"><label>Website with HTTPS and SSL
+          <select id="website">
+            <option value="">Select</option>
+            <option value="available">Available</option>
+            <option value="not">Not available</option>
+          </select></label></div>
+        <div class="item"><label>Business support email
+          <select id="email">
+            <option value="">Select</option>
+            <option value="available">Available</option>
+            <option value="not">Not available</option>
+          </select></label></div>
+      </div>
+      <div class="inline">
+        <div>
+          <label for="site">Website URL</label>
+          <input id="site" type="url" placeholder="https://www.yourbrand.com" />
+        </div>
+        <div>
+          <label for="mail">Support email</label>
+          <input id="mail" type="email" placeholder="support@yourbrand.com" />
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="card statusBox info" id="statusBox">
+    <strong>Status</strong>
+    <div id="statusText">Complete the checklist to see your onboarding decision</div>
+  </div>
+
+  <div class="card">
+    <details>
+      <summary><strong>See missing items</strong> <span id="statusPill" class="pill warn">Action needed</span></summary>
+      <div id="missing" class="missing"></div>
+    </details>
+    <div class="btns">
+      <button class="btn primary" id="ready" disabled>I am ready for onboarding</button>
+    </div>
+  </div>
+</main>
+
+<footer class="wrap" style="color:#555; font-size:14px">
+  Tip: If you want this page branded, share your hex codes and logo and we will style it.
+</footer>
+
+<script>
+  // Tracked fields
+  const fields = [
+    "docType","docOther","addrType","addrOther",
+    "mbm_admin","mbm_mfa",
+    "fb_personal","fb_page_created","fb_page_name",
+    "num_plan","num_otp","num_type","number",
+    "website","email","site","mail"
+  ];
+
+  const availabilityForProgress = ["mbm_admin","fb_personal","fb_page_created","num_plan","num_otp","num_type","website","email"];
+  const totalAvail = availabilityForProgress.length;
+
+  const bar = document.getElementById("bar");
+  const count = document.getElementById("count");
+  const pct = document.getElementById("pct");
+  const exportBtn = document.getElementById("export");
+  const readyBtn = document.getElementById("ready");
+  const missingBox = document.getElementById("missing");
+  const statusPill = document.getElementById("statusPill");
+  const statusBox = document.getElementById("statusBox");
+  const statusText = document.getElementById("statusText");
+  const fbPageCreated = document.getElementById("fb_page_created");
+  const fbPageNameRow = document.getElementById("fb_page_name_row");
+  const fbPageName = document.getElementById("fb_page_name");
+
+  function load() {
+    fields.forEach(id => {
+      const el = document.getElementById(id);
+      const v = localStorage.getItem("tittu_" + id);
+      if (v !== null) el.value = v;
+    });
+    togglePageName();
+    compute();
+  }
+
+  function save() {
+    fields.forEach(id => {
+      const el = document.getElementById(id);
+      localStorage.setItem("tittu_" + id, el.value);
+    });
+  }
+
+  function resetAll() {
+    fields.forEach(id => localStorage.removeItem("tittu_" + id));
+    location.reload();
+  }
+
+  function togglePageName() {
+    const show = fbPageCreated.value === "yes";
+    fbPageNameRow.style.display = show ? "grid" : "none";
+  }
+
+  function compute() {
+    // progress for high impact items
+    const available = availabilityForProgress.filter(id => isPositive(id)).length;
+    const percent = Math.round((available / totalAvail) * 100);
+    bar.style.width = percent + "%";
+    count.textContent = available + " of " + totalAvail + " available";
+    pct.textContent = percent + "%";
+
+    const missing = [];
+
+    // Registration doc rules
+    const docType = val("docType");
+    const docOther = document.getElementById("docOther").value.trim();
+    if (!docType) missing.push("Select a registration document");
+    if (docType === "Other" && !docOther) missing.push("Specify the Other registration document");
+
+    // Address proof rules
+    const addrType = val("addrType");
+    const addrOther = document.getElementById("addrOther").value.trim();
+    if (!addrType) missing.push("Select a proof of address document");
+    if (addrType === "Other" && !addrOther) missing.push("Specify the Other address document");
+
+    // Meta and Facebook
+    if (!val("mbm_admin")) missing.push("Select your Meta admin access");
+    if (!val("mbm_mfa")) missing.push("Select your Meta admin MFA status");
+    if (!val("fb_personal")) missing.push("Select personal Facebook account availability");
+    if (!val("fb_page_created")) missing.push("Select if Business Facebook Page is created");
+    if (val("fb_page_created") === "yes" && !fbPageName.value.trim()) missing.push("Enter Business Facebook Page name");
+
+    // Phone number plan
+    if (!val("num_plan")) missing.push("Select your phone number plan");
+    if (!val("num_otp")) missing.push("Select OTP reachability");
+    if (!val("num_type")) missing.push("Select number type");
+
+    // Website and email
+    if (!val("website")) missing.push("Select website availability");
+    if (!val("email")) missing.push("Select support email availability");
+
+    missingBox.innerHTML = missing.length
+      ? "<ul>" + missing.map(s => "<li>" + s + "</li>").join("") + "</ul>"
+      : "<p class='ok'>All fields are selected</p>";
+
+    // Decision logic
+    const hardBlock =
+      // Docs cannot be Other or Not available
+      docType === "Not available" || docType === "Other" ||
+      addrType === "Not available" || addrType === "Other" ||
+      // Must have Meta admin access
+      val("mbm_admin") !== "admin" ||
+      // Personal Facebook account must be available
+      val("fb_personal") !== "available" ||
+      // Must have a Business Page created and named
+      val("fb_page_created") !== "yes" || !fbPageName.value.trim() ||
+      // Phone plan must be acceptable
+      val("num_plan") === "existing_cannot_use" || val("num_plan") === "not_decided" ||
+      // Must be able to receive OTP
+      val("num_otp") === "cannot_receive" ||
+      // Number cannot be virtual
+      val("num_type") === "virtual" ||
+      // Website and email must be available
+      val("website") !== "available" || val("email") !== "available";
+
+    const softWarn = val("mbm_mfa") !== "all_admins";
+
+    if (hardBlock) {
+      exportBtn.disabled = false;
+      readyBtn.disabled = true;
+      statusPill.textContent = "Blocked";
+      statusPill.className = "pill warn";
+      statusBox.className = "card statusBox warn";
+      statusText.textContent = "Documents or access are missing and cannot be onboarded. Please resolve the blocked items to proceed.";
+    } else if (missing.length > 0) {
+      exportBtn.disabled = true;
+      readyBtn.disabled = true;
+      statusPill.textContent = "Action needed";
+      statusPill.className = "pill warn";
+      statusBox.className = "card statusBox info";
+      statusText.textContent = "Please complete the fields to get a decision.";
+    } else {
+      exportBtn.disabled = false;
+      if (softWarn) {
+        readyBtn.disabled = false;
+        statusPill.textContent = "Ready with advisory";
+        statusPill.className = "pill info";
+        statusBox.className = "card statusBox info";
+        statusText.textContent = "You can onboard now. For better security enable multi factor authentication for all admins.";
+      } else {
+        readyBtn.disabled = false;
+        statusPill.textContent = "All set";
+        statusPill.className = "pill ok";
+        statusBox.className = "card statusBox ok";
+        statusText.textContent = "Yes you are ready to onboard.";
+      }
+    }
+  }
+
+  function isPositive(id) {
+    const v = val(id);
+    if (id === "mbm_admin") return v === "admin";
+    if (id === "fb_personal") return v === "available";
+    if (id === "fb_page_created") return v === "yes";
+    if (id === "num_plan") return v === "new_unused" || v === "migrate_to_api";
+    if (id === "num_otp") return v === "can_receive";
+    if (id === "num_type") return v === "physical";
+    if (id === "website") return v === "available";
+    if (id === "email") return v === "available";
+    return false;
+  }
+
+  function val(id) { return document.getElementById(id).value; }
+
+  function exportReport() {
+    const data = {};
+    fields.forEach(id => data[id] = val(id));
+    data.timestamp = new Date().toISOString();
+
+    const docOtherVal = document.getElementById('docOther').value.trim();
+    const addrOtherVal = document.getElementById('addrOther').value.trim();
+    const pageNameVal = document.getElementById('fb_page_name').value.trim();
+
+    const lines = [
+      "Tittu Customer Readiness Report",
+      "Timestamp " + data.timestamp,
+      "",
+      "Registration document " + (data.docType === "Other" ? ("Other " + (docOtherVal || "not specified")) : (data.docType || "not selected")),
+      "Address document " + (data.addrType === "Other" ? ("Other " + (addrOtherVal || "not specified")) : (data.addrType || "not selected")),
+      "",
+      "Meta account and Facebook access",
+      "- Admin page access " + (data.mbm_admin || "not selected"),
+      "- MFA on admin " + (data.mbm_mfa || "not selected"),
+      "- Personal Facebook account " + (data.fb_personal || "not selected"),
+      "- Business Facebook Page " + (data.fb_page_created || "not selected") + (data.fb_page_created === "yes" ? (" (" + (pageNameVal || "no name provided") + ")") : ""),
+      "",
+      "Phone number plan",
+      "- Plan " + (data.num_plan || "not selected"),
+      "- OTP reachability " + (data.num_otp || "not selected"),
+      "- Number type " + (data.num_type || "not selected"),
+      "Planned WhatsApp number " + (data.number || "not provided"),
+      "",
+      "Digital presence",
+      "- Website " + (data.website || "not selected") + " " + (data.site || ""),
+      "- Support email " + (data.email || "not selected") + " " + (data.mail || ""),
+    ].join("\n");
+
+    const blob = new Blob([lines], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "Tittu_Customer_Readiness_Report.txt";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 0);
+  }
+
+  document.getElementById("save").addEventListener("click", () => { save(); compute(); });
+  document.getElementById("reset").addEventListener("click", resetAll);
+  document.getElementById("print").addEventListener("click", () => window.print());
+  document.getElementById("export").addEventListener("click", exportReport);
+  document.getElementById("ready").addEventListener("click", () => alert("Great! You are ready. Our team will reach out to schedule activation."));
+
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    el.addEventListener("change", () => { if(id === "fb_page_created") togglePageName(); compute(); });
+    if (el.tagName === "INPUT") el.addEventListener("input", compute);
+  });
+
+  load();
+</script>
+</body>
+</html>
